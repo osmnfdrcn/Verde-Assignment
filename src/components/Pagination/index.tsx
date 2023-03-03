@@ -1,9 +1,7 @@
-import { Button } from "../";
+import { Button, SinglePost, Title } from "../";
 import usePagination from "../../hooks/usePagination";
 import { useAppSelector, RootState } from "../../state/store";
 import { v4 as uuidv4 } from "uuid";
-import SinglePost from "../SinglePost";
-import Title from "../Title";
 
 type Props = {};
 
