@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuid } from "uuid";
+import { AiOutlineEdit, AiOutlineClose } from "react-icons/ai";
 import {
   Button,
   Spinner,
@@ -28,6 +29,8 @@ const PostPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const [isEditable, setIsEditable] = useState(false);
 
   const post = useAppSelector((store: RootState) =>
     store.posts.posts.find((post: IPost) => post.id == id)
@@ -64,7 +67,9 @@ const PostPage = () => {
       dispatch(setOpenConfirmModal(true));
     }
   };
-
+  const handletoggle = () => {
+    setIsEditable((e) => !e);
+  };
   if (isLoading) {
     <Spinner />;
   }
@@ -75,6 +80,7 @@ const PostPage = () => {
   return (
     <>
       {/* header */}
+
       <div className="bg-indigo-50 border flex items-center justify-between  h-10 py-7 px-4 sticky top-14 left-0 right-0">
         {/* home button and text on left */}
         <div className="flex items-center gap-4">
@@ -89,50 +95,73 @@ const PostPage = () => {
             type="light"
             text="Delete"
           />
-          <Button onClick={handleSavePostClick} type="dark" text="Update" />
         </div>
       </div>
 
       {/* post form */}
       <div className="flex flex-col border bg-slate-50 mt-12 p-6 min-h-full ">
-        <FormRow classes="mt-6">
-          <Label
-            id="title"
-            titleText="Title"
-            classes="block mb-2 text-sm font-medium text-stone-600 "
-          />
-          <Input
-            id="title"
-            type="text"
-            value={title}
-            onChange={handleTitleChange}
-            classes="block p-2.5 w-full text-sm text-stone-900 bg-gray-50 rounded-lg border border-stone-300"
-          />
-        </FormRow>
+        <div className="flex justify-end">
+          {isEditable ? (
+            <div className="flex gap-6 items-center">
+              <Button onClick={handleSavePostClick} type="dark" text="Update" />
+              <div
+                className="cursor-pointer w-full"
+                onClick={() => setIsEditable(false)}
+              >
+                <AiOutlineClose />
+              </div>
+            </div>
+          ) : (
+            <div className="text-2xl cursor-pointer" onClick={handletoggle}>
+              {" "}
+              <AiOutlineEdit />
+            </div>
+          )}
+        </div>
 
-        <FormRow classes="mt-10">
-          <Label
-            id="body"
-            titleText="Post Content"
-            classes="block mb-2 text-lg font-medium text-gray-900"
-          />
-          <TextArea
-            id="body"
-            rows={14}
-            value={body}
-            onChange={handleBodyChange}
-            classes="block p-2.5 w-full text-sm  text-stone-900 bg-gray-50 rounded-lg border border-stone-300"
-          />
-        </FormRow>
+        {!isEditable ? (
+          <div className="p-4">
+            <p className="uppercase text-stone-700  text-lg xl:text-xl pb-4">
+              {title}
+            </p>
+            <p className="bio text-sm">{body}</p>
+          </div>
+        ) : (
+          <>
+            <FormRow classes="mt-6">
+              <Label
+                id="title"
+                titleText="Title"
+                classes="block mb-2 text-sm font-medium text-stone-600 "
+              />
+              <Input
+                id="title"
+                type="text"
+                value={title}
+                onChange={handleTitleChange}
+                classes="block p-2.5 w-full text-sm text-stone-900 bg-gray-50 rounded-lg border border-stone-300"
+              />
+            </FormRow>
+
+            <FormRow classes="mt-10">
+              <Label
+                id="body"
+                titleText="Post Content"
+                classes="block mb-2 text-lg font-medium text-gray-900"
+              />
+              <TextArea
+                id="body"
+                rows={14}
+                value={body}
+                onChange={handleBodyChange}
+                classes="block p-2.5 w-full text-sm  text-stone-900 bg-gray-50 rounded-lg border border-stone-300"
+              />
+            </FormRow>
+          </>
+        )}
       </div>
 
-      {/* comments */}
-      <div className="border mt-10 flex flex-col items-center justify-center ">
-        <Title text="Comments" />
-        {comments.map((comment) => {
-          return <Comment comment={comment} key={uuid()} />;
-        })}
-      </div>
+      <CommentSection data={comments} />
 
       {/* modal container */}
       {isOpenConfirmModal && (
@@ -153,6 +182,17 @@ const PostPage = () => {
         />
       )}
     </>
+  );
+};
+
+const CommentSection = ({ data }: any) => {
+  return (
+    <div className="border mt-10 flex flex-col items-center justify-center ">
+      <Title text="COMMENTS" />
+      {data.map((c: IComment) => {
+        return <Comment comment={c} key={uuid()} />;
+      })}
+    </div>
   );
 };
 
