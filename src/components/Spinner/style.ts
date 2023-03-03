@@ -1,0 +1,42 @@
+import styled from "styled-components";
+
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  @keyframes book-bounce {
+    0% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-10px);
+    }
+    80% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  .book-shelf {
+    .book-shelf__book {
+      animation: book-bounce 1.5s linear infinite;
+    }
+    .book-shelf__book--two {
+      animation-delay: 0.1s;
+    }
+    .book-shelf__book--two {
+      animation-delay: 0.2s;
+    }
+    .book-shelf__book--three {
+      animation-delay: 0.3s;
+    }
+    .book-shelf__shelf {
+      animation: shelf-lift 1s ease infinite;
+      transform-origin: 50% 50%;
+    }
+  }
+`;
+
+export default Wrapper;
